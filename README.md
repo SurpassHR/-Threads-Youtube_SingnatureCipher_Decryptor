@@ -34,3 +34,9 @@ requests库/多线程/默认最高质量音轨和图像
 
 ![wCfaPf.png](https://s1.ax1x.com/2020/09/03/wCfaPf.png)
 ![wCfdG8.png](https://s1.ax1x.com/2020/09/03/wCfdG8.png)
+
+## TODO:
+
+- [x] 多线程
+- [ ] GUI
+- [ ] 编译可执行文件
