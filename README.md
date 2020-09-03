@@ -28,6 +28,9 @@ requests库/多线程/默认最高质量音轨和图像
 
 3.默认开启了日志，可以在`YSD.py line:57 # logOn = True`将`True`改为`False`，然后删除目录下的`log`文件夹即可
 
+4.本程序只用作学习用途
+
 ### 下载示范：
-![](https://imgchr.com/i/wCfaPf)
-![](https://imgchr.com/i/wCfdG8)
+
+![wCfaPf.png](https://s1.ax1x.com/2020/09/03/wCfaPf.png)
+![wCfdG8.png](https://s1.ax1x.com/2020/09/03/wCfdG8.png)
