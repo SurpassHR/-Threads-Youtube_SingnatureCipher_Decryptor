@@ -10,12 +10,14 @@
 import urllib.request
 from bs4 import BeautifulSoup
 import re
+import time
 
 headers = {
     "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.76 Safari/537.36",
     "accept-language": "en,zh-CN;q=0.9,zh;q=0.8,ja;q=0.7,ar;q=0.6"
 }
 domain = "https://www.youtube.com"
+mainfun = re.compile('^(.*?)=function(a){a=a.split("");(.*?)};')
 
 
 def askURL(url):
@@ -44,14 +46,16 @@ def writeFile(jsfile, basepath):
     return
 
 
-def main():
+def main(update_time):
     url = 'https://www.youtube.com/watch?v=LXb3EKWsInQ&t=3s'
-    basepath = 'base.js'
+    basepath = './base_history/'
+    filename = basepath + 'base' + update_time + '.js'
     html = askURL(url)
     basejs = parseHtml(html)
     jsfile = findBaseJs(basejs)
-    writeFile(jsfile, basepath)
+    writeFile(jsfile, filename)
 
 
 if __name__ == '__main__':
-    main()
+    update_time = time.strftime("%Y-%m-%d_%H-%M-%S", time.localtime())
+    main(update_time)

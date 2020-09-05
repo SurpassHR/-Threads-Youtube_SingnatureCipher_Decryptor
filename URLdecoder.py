@@ -48,28 +48,26 @@ def splice(list, index, num):
 
 
 class Fv:
-    def i7(a:list, b):
+    def transfer(a:list, b):
         c = a[0]
         a[0] = a[b % len(a)]
         a[b % len(a)] = c
 
-    def D3(a:list, b):
+    def spli(a:list, b):
         splice(a, 0, b)
 
-    def Hm(a:list, num:int):
+    def rev(a:list, num:int):
         a.reverse()
 
 def Gv(s):
     a = []
     for item in s:
         a.append(item)
-    Fv.Hm(a, 30)
-    Fv.i7(a, 69)
-    Fv.Hm(a, 3)
-    Fv.i7(a, 20)
-    Fv.Hm(a, 52)
-    Fv.i7(a, 32)
-    Fv.D3(a, 3)
+    Fv.spli(a, 2)
+    Fv.transfer(a, 28)
+    Fv.transfer(a, 46)
+    Fv.rev(a, 46)
+    Fv.spli(a, 1)
     return ''.join(a)
 
 

@@ -20,9 +20,6 @@ Hv = function (a) {
     return a.join("")
 };
 
-s = 'ccOqAOq0QJ8wRQIgBuNfgiPAG1So8sHkvynM2zI_Al-_RcmY0dUoFSZh3mICIQCpqaaY08hzym7HTEEy_Kd4eBUoIZzWrlAJvWpkl-NatA%3D%3D'
+s = 'agagB4BurZiPJ-AXBd6aKeUT2GAtDdi3u5fsIjTtButvv6AE%3DAL0ZkLwdxWGfM1cm6tgFjuiw6esE5CU31YBQhbVVdZ4JAhIgRw8JQ0qOAA'
+// s = 'ccOqAOq0QJ8wRQIgBuNfgiPAG1So8sHkvynM2zI_Al-_RcmY0dUoFSZh3mICIQCpqaaY08hzym7HTEEy_Kd4eBUoIZzWrlAJvWpkl-NatA%3D%3D'
 a = Hv(s)
-
-var g = {
-    i: function ()
-}

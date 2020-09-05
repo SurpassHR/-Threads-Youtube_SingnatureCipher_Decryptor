@@ -279,7 +279,14 @@ import json
 
 # print(to_chinese(string))
 
-string = 'Superman vs Justice League | Justice League 4k SDR'
+# ---------------base.js process---------------
 
-string.replace(' | ', '')
-print(string)
+func = re.compile('(.*?)=function\(a\){a=a.split\(""\);(.*?)};')
+
+f = open("./base_history/base2020-09-05_16-48-02.js", "r", encoding='utf-8')
+s = f.read(10)
+f.close()
+
+mainfun = re.findall('a', s)
+
+print(mainfun)

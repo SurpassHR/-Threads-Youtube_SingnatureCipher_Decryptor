@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <script>
+        Ev = function (a) {
+            a = a.split("");
+            Dv.p4(a, 2); // spilice
+            Dv.tS(a, 28);  // %
+            Dv.tS(a, 46);  // %
+            Dv.Je(a, 46);  // reverse
+            Dv.p4(a, 1); // spilice
+            return a.join("")
+        };
+
+        var Dv = {
+            Je: function (a) {
+                a.reverse()
+            },
+            p4: function (a, b) {
+                a.splice(0, b)
+            },
+            tS: function (a, b) {
+                var c = a[0];
+                a[0] = a[b % a.length];
+                a[b % a.length] = c
+            }
+        };
+
+        sig = Ev(s);
+        console.log("sig = ", sig);
+    </script>
+</body>
+</html>
+
+
+

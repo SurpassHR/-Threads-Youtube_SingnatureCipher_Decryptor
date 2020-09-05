@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <script>
+        var Gv = {
+            HF: function (a) {
+                a.reverse()
+            },
+            A2: function (a, b) {
+                a.splice(0, b)
+            },
+            ch: function (a, b) {
+                var c = a[0];
+                a[0] = a[b % a.length];
+                a[b % a.length] = c
+            }
+        };
+
+        Hv = function (a) {
+            a = a.split("");
+            Gv.A2(a, 1);
+            Gv.ch(a, 39);
+            Gv.A2(a, 3);
+            return a.join("")
+        };
+
+        s = 'agagB4BurZiPJ-AXBd6aKeUT2GAtDdi3u5fsIjTtButvv6AE%3DAL0ZkLwdxWGfM1cm6tgFjuiw6esE5CU31YBQhbVVdZ4JAhIgRw8JQ0qOAA'
+        sig = Hv(s)     
+
+        console.log("sig = " + sig)
+    </script>
+</body>
+</html>
+
+
+

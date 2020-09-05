@@ -89,7 +89,7 @@ def cfgDirInit(path: str) -> bool:
 # 过程文件保留
 def write(file: str, filename: str) -> bool:
     """
-    :param file:文件内容
+    :param file:文件内Fv.容
     :param filename:文件名
     :return:None
     """
