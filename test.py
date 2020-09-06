@@ -281,12 +281,53 @@ import json
 
 # ---------------base.js process---------------
 
-func = re.compile('(.*?)=function\(a\){a=a.split\(""\);(.*?)};')
+# func = re.compile('.*?function\(a\){a=a.split\(""\).*?return a.join\(""\)};')
+#
+# f = open("./base_history/base2020-09-05_16-48-02.js", "r", encoding='utf-8')
+# s = f.read(10)
+# f.close()
+#
+# mainfun = re.findall('a', s)
+#
+# print(mainfun)
 
-f = open("./base_history/base2020-09-05_16-48-02.js", "r", encoding='utf-8')
-s = f.read(10)
+
+func = re.compile('.*?function\(a\){a=a.split\(""\).*?return a.join\(""\)};')
+
+
+from itertools import islice
+s = ""
+
+f=open("./base_history/base2020-09-05_16-48-02.js")
+for a in islice(f, 1400, 1500):
+    s = s + a
 f.close()
 
-mainfun = re.findall('a', s)
+mainfunc = re.findall(func, s)[0]
+mainfunc = mainfunc.replace('{', ' {\n\t').replace('}', '\n}').replace(';', ';\n\t')
 
-print(mainfun)
+print(mainfunc)
+
+sub0 = re.compile('([0-9a-zA-Z]{2})\.')
+sub0funcname = re.findall(sub0, mainfunc)[0]
+
+# print(sub0funcname)
+
+# sub = re.compile('var ' + sub0funcname + '={.*?};', re.S)
+sub = re.compile(sub0funcname + '=\{.*?};', re.S)
+# print('var ' + sub0funcname + '={.*?};')
+# subfunc = re.findall(sub, s)
+# print(subfunc)
+
+f=open("./base_history/base2020-09-05_16-48-02.js")
+for a in islice(f, 5500, 5700):
+    s = s + a
+f.close()
+subfunc = re.findall(sub, s)[0].replace('{', ' {\n\t').replace('}', '\n}').replace(';', ';\n\t').replace('},', '\t},')
+print(subfunc)
+
+'''
+var Dv={Je:function(a){a.reverse()},
+        p4:function(a,b){a.splice(0,b)},
+        tS:function(a,b){var c=a[0];a[0]=a[b%a.length];a[b%a.length]=c}};
+'''
