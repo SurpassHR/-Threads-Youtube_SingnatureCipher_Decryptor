@@ -6,6 +6,7 @@
 # @Software: PyCharm 
 # @Email : hu.rui0530@gmail.com
 
+from decodeAllinOne import jsdecode
 
 decode_dict = {
     ' ': '%20',
@@ -38,41 +39,41 @@ def seperatorOff(a):
     return a
 
 
-def splice(list, index, num):
-    for i in range(num):
-        list[index + i] = ''
-    while '' in list:
-        list.remove('')
+# def splice(list, index, num):
+#     for i in range(num):
+#         list[index + i] = ''
+#     while '' in list:
+#         list.remove('')
+#
+#     return list
+#
+#
+# class Fv:
+#     def transfer(a:list, b):
+#         c = a[0]
+#         a[0] = a[b % len(a)]
+#         a[b % len(a)] = c
+#
+#     def spli(a:list, b):
+#         splice(a, 0, b)
+#
+#     def rev(a:list, num:int):
+#         a.reverse()
+#
+# def Gv(s):
+#     a = []
+#     for item in s:
+#         a.append(item)
+#     Fv.spli(a, 2)
+#     Fv.transfer(a, 28)
+#     Fv.transfer(a, 46)
+#     Fv.rev(a, 46)
+#     Fv.spli(a, 1)
+#     return ''.join(a)
 
-    return list
 
-
-class Fv:
-    def transfer(a:list, b):
-        c = a[0]
-        a[0] = a[b % len(a)]
-        a[b % len(a)] = c
-
-    def spli(a:list, b):
-        splice(a, 0, b)
-
-    def rev(a:list, num:int):
-        a.reverse()
-
-def Gv(s):
-    a = []
-    for item in s:
-        a.append(item)
-    Fv.spli(a, 2)
-    Fv.transfer(a, 28)
-    Fv.transfer(a, 46)
-    Fv.rev(a, 46)
-    Fv.spli(a, 1)
-    return ''.join(a)
-
-
-def decode(s):
-    return Gv(s)
+def decode(sig):
+    return jsdecode(sig)
 
 
 if __name__ == '__main__':
