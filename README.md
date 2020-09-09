@@ -23,13 +23,15 @@ js运行环境：Nodejs
 
 3.输入`pip install -r requirements.txt`回车，自动配置（实际上除requests之外都是更新）
 
-4.仍然是cmd，输入`python YSD.py`
+4.cmd输入`py decodeAllinOne.py`，待录入完成后关闭，出现`base_history`文件夹，算法源文件
+
+4.仍然是cmd，输入`py YSD.py`
 
 5.出现`input video address:`后，输入ytb地址
 
 6.在提示`用时...`后表示已经下载完成
 
-7.目录下出现video和audio两个文件夹，音频视频分别保存，自动命名
+7.目录下出现`video`和`audio`两个文件夹，音频视频分别保存，自动命名
 
 ## 说明：
 
