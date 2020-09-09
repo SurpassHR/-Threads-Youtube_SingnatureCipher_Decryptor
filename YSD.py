@@ -13,6 +13,7 @@ import time
 import json
 import URLdecoder
 import threadsDownload
+
 # import copy
 # import dictTraversal
 # import callIDMan
@@ -53,8 +54,9 @@ headers = {
 cfgPath = './log/'
 vidDownPath = './video/'
 audDownPath = './audio/'
+baseDownPath = './base_history/'
 # 日志开关
-logOn = True
+logOn = False
 
 
 # url格式检测
@@ -240,6 +242,7 @@ def main():
     pre_html, title = prettify(html)
     js_file = process2Js(pre_html)
     json_file = process2Json(js_file)
+    cfgDirInit(baseDownPath)
     down_link_list, rtnLen = getInfo(json_file)
     allocateURL(down_link_list, title, rtnLen)
 

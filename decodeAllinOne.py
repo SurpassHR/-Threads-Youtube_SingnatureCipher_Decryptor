@@ -14,6 +14,7 @@ import execjs
 from bs4 import BeautifulSoup
 from itertools import islice
 
+
 filename = './base_history/base.js'
 headers = {
     "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.76 Safari/537.36",
@@ -23,6 +24,25 @@ domain = "https://www.youtube.com"
 func = re.compile('.*?function\(a\){a=a.split\(""\).*?return a.join\(""\)};')
 mainname = re.compile('([0-9a-zA-Z]{2})=')
 sub0 = re.compile('([0-9a-zA-Z]{2})\.')
+filename = './base_history/base.js'
+baseDownPath = './base_history/'
+
+
+# 初始化目录
+def cfgDirInit(path: str) -> bool:
+    """
+    :param path:
+    :return:
+    """
+    import os
+    isExists = os.path.exists(path)
+    if not isExists:
+        os.makedirs(path)
+        print(path, '创建成功')
+        return True
+    else:
+        print(path, '目录已存在')
+        return False
 
 
 def askURL(url):
@@ -48,43 +68,50 @@ def findBaseJs(basejs):
 def writeFile(jsfile, basepath):
     with open(basepath, "w", encoding='utf-8') as f:
         f.write(jsfile)
-    return
+    return '成功写入{}'.format(filename)
 
 
 def getDecoderFromLine(filename, sig):
     includefun1 = ""
-    f = open(filename)
-    for a in islice(f, 1400, 1500): # 主函数大概位置
-        includefun1 = includefun1 + a
-    f.close()
-    mainfunc = re.findall(func, includefun1)[0] # 主函数体
-    mainfuncname = re.findall(mainname, mainfunc)[0] # 主函数名
+    try:
+        f = open(filename)
+        for a in islice(f, 1400, 1500):   # 主函数大概位置
+            includefun1 = includefun1 + a
+        f.close()
+    except Exception as e:
+        print(e)
+    mainfunc = re.findall(func, includefun1)[0]   # 主函数体
+    mainfuncname = re.findall(mainname, mainfunc)[0]   # 主函数名
 
     includefun2 = ""
-    sub0funcname = re.findall(sub0, mainfunc)[0] # 调用函数名
-    sub = re.compile(sub0funcname + '=\{.*?};', re.S)
-    f = open(filename)
-    for a in islice(f, 5500, 5700): # 调用函数大概位置
-        includefun2 = includefun2 + a
-    f.close()
-    subfunc = re.findall(sub, includefun2)[0].replace('\n', '') # 调用函数体
+    sub0funcname = re.findall(sub0, mainfunc)[0]   # 调用函数名
+    sub = re.compile(sub0funcname + '=\{.*?};', re.S)  # noqa: W605
+    try:
+        f = open(filename)
+        for a in islice(f, 5500, 5700):   # 调用函数大概位置
+            includefun2 = includefun2 + a
+        f.close()
+    except Exception as e:
+        print(e)
+    subfunc = re.findall(sub, includefun2)[0].replace('\n', '')   # 调用函数体
 
     js = mainfunc + subfunc + """
         function decode(sig) {{
             return {}(sig);
         }}
     """.format(mainfuncname)
-    ctx = execjs.compile(js) # 函数 + 输出 打包
+    ctx = execjs.compile(js)   # 函数 + 输出 打包
 
     return ctx.call("decode", sig)
 
 
 def updateDB():
-    url = 'https://www.youtube.com/watch?v=LXb3EKWsInQ&t=3s'
+    url = 'https://www.youtube.com/watch?v=LXb3EKWsInQ'
     html = askURL(url)
     basejs = parseHtml(html)
     jsfile = findBaseJs(basejs)
-    writeFile(jsfile, filename)
+    cfgDirInit(baseDownPath)
+    print(writeFile(jsfile, filename))
 
 
 def jsdecode(sig):
