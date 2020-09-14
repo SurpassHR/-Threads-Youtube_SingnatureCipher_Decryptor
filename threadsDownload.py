@@ -7,7 +7,7 @@
 # @Email : hu.rui0530@gmail.com
 
 # import os, sys
-from urllib.request import *
+# from urllib.request import *
 import threading
 import time, datetime
 import requests

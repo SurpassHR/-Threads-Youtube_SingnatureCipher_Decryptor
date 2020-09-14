@@ -10,6 +10,8 @@
 import re
 import urllib.request
 import execjs
+import time
+import os
 
 from bs4 import BeautifulSoup
 from itertools import islice
@@ -25,6 +27,20 @@ mainname = re.compile('([0-9a-zA-Z]{2})=')
 sub0 = re.compile('([0-9a-zA-Z]{2})\.')
 filename = './base_history/base.js'
 baseDownPath = './base_history/'
+
+
+# 文件改名
+def changeFileName():
+    base_gettime = time.strftime("%Y-%m-%d %H-%M-%S", time.localtime())
+    srcFile = './base_history/base.js'
+    dstFile = './base_history/{}_base.js.old'.format(base_gettime)
+    try:
+        os.rename(srcFile, dstFile)
+    except Exception as e:
+        print(e)
+        print('rename file fail\r\n')
+    else:
+        print('rename file success\r\n')
 
 
 # 初始化目录
@@ -65,6 +81,7 @@ def findBaseJs(basejs):
 
 
 def writeFile(jsfile, basepath):
+    changeFileName()
     with open(basepath, "w", encoding='utf-8') as f:
         f.write(jsfile)
     return '成功写入{}'.format(filename)
@@ -80,6 +97,7 @@ def getDecoderFromLine(filename, sig):
     except Exception as e:
         print(e)
     mainfunc = re.findall(func, includefun1)[0]   # 主函数体
+    print(mainfunc)
     mainfuncname = re.findall(mainname, mainfunc)[0]   # 主函数名
 
     includefun2 = ""
@@ -93,6 +111,7 @@ def getDecoderFromLine(filename, sig):
     except Exception as e:
         print(e)
     subfunc = re.findall(sub, includefun2)[0].replace('\n', '')   # 调用函数体
+    print(subfunc)
 
     js = mainfunc + subfunc + """
         function decode(sig) {{
@@ -119,3 +138,6 @@ def jsdecode(sig):
 
 if __name__ == '__main__':
     updateDB()
+    # sig decode test
+    sig = 'AOqAOq0QJ8wRgIhAKRCMhimUm40tdI9y5jK_0kbVT06hfm8C2NMBgJA%3DWHYAiEA9K6Hcab7TnatwVbwlcxBQ2MZj4abh1J67X0sntVvtWVg'
+    getDecoderFromLine(filename,sig)
