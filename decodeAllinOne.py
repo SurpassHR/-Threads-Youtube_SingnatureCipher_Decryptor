@@ -99,7 +99,7 @@ def getDecoderFromLine(filename, sig):
     except Exception as e:
         print(e)
     mainfunc = re.findall(func, includefun1)[0]   # 主函数体
-    print(mainfunc)
+    # print(mainfunc)
     mainfuncname = re.findall(mainname, mainfunc)[0]   # 主函数名
 
     includefun2 = ""
@@ -113,7 +113,7 @@ def getDecoderFromLine(filename, sig):
     except Exception as e:
         print(e)
     subfunc = re.findall(sub, includefun2)[0].replace('\n', '')   # 调用函数体
-    print(subfunc)
+    # print(subfunc)
 
     js = mainfunc + subfunc + """
         function decode(sig) {{
@@ -140,7 +140,7 @@ def jsdecode(sig):
 
 
 if __name__ == '__main__':
-    updateDB()
+    # updateDB()
     # sig decode test
-    # sig = 'AOqAOq0QJ8wRgIhAKRCMhimUm40tdI9y5jK_0kbVT06hfm8C2NMBgJA%3DWHYAiEA9K6Hcab7TnatwVbwlcxBQ2MZj4abh1J67X0sntVvtWVg'
-    # print(getDecoderFromLine(filename, sig))
+    sig = '4Aq0QJ8wRAIgQlTW1pgRQn5N7mORhz5Xk7S3aHGqnJCp4u9Eg5NO-SICIGosCEUO4LM4KdPw_2rgg7vDFGmDZg_C6ziSfuvCU2jnjn'
+    print(getDecoderFromLine(filename, sig))

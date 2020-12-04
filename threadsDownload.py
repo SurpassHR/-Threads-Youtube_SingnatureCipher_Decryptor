@@ -40,14 +40,11 @@ import requests
 # threadpool: t.join()
 
 
-def thread(url, filename, downpath, file_size):
-    vidDownPath = './video/'
-    audDownPath = './audio/'
-    post = ''
-
-    if downpath == vidDownPath:
+def thread(url, filename, downpath, file_size, i):
+    print(downpath)
+    if i == 0:
         post = '.mp4'
-    elif downpath == audDownPath:
+    else:
         post = '.mp3'
 
     headers = {
@@ -63,6 +60,7 @@ def thread(url, filename, downpath, file_size):
     # 如果获取到文件大小，创建一个和需要下载文件一样大小的文件
     if file_size:
         fp = open(downpath + filename + post, 'wb')
+        print(downpath + filename + post)
         fp.truncate(file_size)
         print('视频大小：' + str(int(file_size / 1024 / 1024)) + "MB")
         fp.close()

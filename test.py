@@ -340,14 +340,20 @@ import json
 
 
 # json格式混乱部分的格式化
-import json
+# import json
+#
+#
+# def formatter(json_file):
+#     import re
+#     a = re.findall('; codecs=".*?"",', json_file)
+#     for item in a:
+#         json_file = json_file.replace(item, '",')
+#
+#     load = json.loads(json_file)
+#     return load
 
 
-def formatter(json_file):
-    import re
-    a = re.findall('; codecs=".*?"",', json_file)
-    for item in a:
-        json_file = json_file.replace(item, '",')
+import sys
 
-    load = json.loads(json_file)
-    return load
+
+print(sys.path)

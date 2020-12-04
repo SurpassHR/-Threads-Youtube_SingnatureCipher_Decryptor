@@ -52,11 +52,12 @@ headers = {
 }
 # 路径
 cfgPath = './log/'
-vidDownPath = './video/'
-audDownPath = './audio/'
+downloadsPath = './downloads/'
+# vidDownPath = downloadsPath + 'video/'
+# audDownPath = downloadsPath + 'audio/'
 baseDownPath = './base_history/'
 # 日志开关
-logOn = False
+logOn = True
 
 
 # url格式检测
@@ -124,7 +125,7 @@ def askURL(url):
         main()
 
     if logOn:
-        filename = 'oringin_video_page.html'
+        filename = 'origin_video_page.html'
         write(html, filename)
 
     return html
@@ -235,13 +236,14 @@ def allocateURL(down_link_list, title, rtnlen):
             print('存在不符合命名规范的字符，已删除')
             title = title.replace(item, '')
     print(title)
-    cfgDirInit(vidDownPath)
-    cfgDirInit(audDownPath)
+    cfgDirInit(downloadsPath + title + ' - Youtube')
     for i in range(len(down_link_list)):
         if i == 0:
-            threadsDownload.thread(down_link_list[i], title, vidDownPath, rtnlen[i])
+            # 视频部分
+            threadsDownload.thread(down_link_list[i], title, downloadsPath + title + ' - Youtube/', rtnlen[i], i)
         else:
-            threadsDownload.thread(down_link_list[i], title, audDownPath, rtnlen[i])
+            # 音频部分
+            threadsDownload.thread(down_link_list[i], title, downloadsPath + title + ' - Youtube/', rtnlen[i], i)
         # callIDMan.call(link, downPath, title)
 
 
