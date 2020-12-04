@@ -7,6 +7,12 @@ requests库/多线程/默认最高质量音轨和图像
 
 js运行环境：Nodejs
 
+## What you should do to build the environment
+
+1.`pip install -r requirement.txt`
+
+2.[Node.js官网](https://nodejs.org/en/)下载Node.js并按照默认设置安装
+
 
 
 #### @Note 2020-09-05 推翻了之前的一个猜想，base.js加密文件的覆写日期并不等于其过期日期，一般3到5天进行一次更新，在未格式化的文件中，算法的主函数位于1400-1500行之间，调用的类方法在5500-5700行之间，利用正则表达式可以获取算法函数的内容；函数每次变换的是顺序或者操作次数或者函数、变量名，并不会更改调用函数的内容，通过运行`getDecodeBase.py`可以得到算法的完整内容。
