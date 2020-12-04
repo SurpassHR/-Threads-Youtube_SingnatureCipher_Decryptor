@@ -22,10 +22,10 @@ import threadsDownload
 # 正则
 urlFormat = re.compile(r'^https://www.youtube.com/watch\?v=.*|www.youtube.com/watch\?v=.*|youtube.com/watch\?v=.*')
 mediaTitle = re.compile(r'<meta name="title" content="(.*?)">', re.S)
-ytplayerCfg = re.compile(r'<script >var ytplayer.*?</script>', re.S)
-streamingData = re.compile(r'"streamingData":{', re.S)
-streamingdata1 = re.compile("'streamingData':{(.*)},'playbackTracking'", re.S)
-streamingdata0 = re.compile("'streamingData':{(.*)},'playerAds'", re.S)
+ytplayerCfg = re.compile(r'<script .*>var ytplayer.*?</script>', re.S)
+# streamingData = re.compile(r'"streamingData":{', re.S)
+streamingdata1 = re.compile('"streamingData":{(.*)},"playbackTracking"', re.S)
+streamingdata0 = re.compile('"streamingData":{(.*)},"playerAds"', re.S)
 findVid = re.compile("'mimeType': 'video/mp4|'mimeType': 'video/webm", re.S)
 findAud = re.compile("'mimeType': 'audio/mp4|'mimeType': 'audio/webm", re.S)
 sigCipher = re.compile(r's=(.*?)&sp')
@@ -171,6 +171,16 @@ def process2Json(js_file):
     return json_file
 
 
+# json格式混乱部分的格式化
+def formatter(json_file):
+    a = re.findall('; codecs=".*?"",', json_file)
+    for item in a:
+        json_file = json_file.replace(item, '",')
+
+    load = json.loads(json_file)
+    return load
+
+
 # 装载json信息并转换为py中的字典
 def getInfo(json_file):
     down_link_list = []
@@ -182,7 +192,7 @@ def getInfo(json_file):
     lenList = []
     rtnLen = []
 
-    video_info_dict = json.loads(json_file)
+    video_info_dict = formatter(json_file)
     streamingList = video_info_dict['streamingData']['adaptiveFormats']
 
     for item in streamingList:

@@ -18,7 +18,8 @@ from itertools import islice
 
 
 headers = {
-    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.76 Safari/537.36",
+    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
+                  "Chrome/85.0.4183.76 Safari/537.36",
     "accept-language": "en,zh-CN;q=0.9,zh;q=0.8,ja;q=0.7,ar;q=0.6"
 }
 domain = "https://www.youtube.com"
@@ -26,6 +27,7 @@ func = re.compile('.*?function\(a\){a=a.split\(""\).*?return a.join\(""\)};')
 mainname = re.compile('([0-9a-zA-Z]{2})=')
 sub0 = re.compile('([0-9a-zA-Z]{2})\.')
 filename = './base_history/base.js'
+# filename = './base_history/2020-09-22 17-42-53_base.js'
 baseDownPath = './base_history/'
 
 
@@ -102,10 +104,10 @@ def getDecoderFromLine(filename, sig):
 
     includefun2 = ""
     sub0funcname = re.findall(sub0, mainfunc)[0]   # 调用函数名
-    sub = re.compile(sub0funcname + '=\{.*?};', re.S)  # noqa: W605
+    sub = re.compile(sub0funcname + '=\{.*?\};', re.S)  # noqa: W605
     try:
         f = open(filename)
-        for a in islice(f, 5500, 5700):   # 调用函数大概位置
+        for a in islice(f, 5500, 6000):   # 调用函数大概位置
             includefun2 = includefun2 + a
         f.close()
     except Exception as e:
@@ -127,6 +129,7 @@ def updateDB():
     url = 'https://www.youtube.com/watch?v=LXb3EKWsInQ'
     html = askURL(url)
     basejs = parseHtml(html)
+    print(basejs)
     jsfile = findBaseJs(basejs)
     cfgDirInit(baseDownPath)
     print(writeFile(jsfile, filename))
@@ -139,5 +142,5 @@ def jsdecode(sig):
 if __name__ == '__main__':
     updateDB()
     # sig decode test
-    sig = 'AOqAOq0QJ8wRgIhAKRCMhimUm40tdI9y5jK_0kbVT06hfm8C2NMBgJA%3DWHYAiEA9K6Hcab7TnatwVbwlcxBQ2MZj4abh1J67X0sntVvtWVg'
-    getDecoderFromLine(filename,sig)
+    # sig = 'AOqAOq0QJ8wRgIhAKRCMhimUm40tdI9y5jK_0kbVT06hfm8C2NMBgJA%3DWHYAiEA9K6Hcab7TnatwVbwlcxBQ2MZj4abh1J67X0sntVvtWVg'
+    # print(getDecoderFromLine(filename, sig))

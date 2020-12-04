@@ -292,48 +292,62 @@ import json
 # print(mainfun)
 
 
-func = re.compile('.*?function\(a\){a=a.split\(""\).*?return a.join\(""\)};')
+# func = re.compile('.*?function\(a\){a=a.split\(""\).*?return a.join\(""\)};')
+#
+#
+# from itertools import islice
+# s = ""
+#
+# f=open("./base_history/base.js")
+# for a in islice(f, 1400, 1500):
+#     s = s + a
+# f.close()
+#
+# mainfunc = re.findall(func, s)[0]
+#
+# print(mainfunc) # 主函数
+#
+# mainname = re.compile('([0-9a-zA-Z]{2})=')
+# mainfuncname = re.findall(mainname, mainfunc)[0]
+# print(mainfuncname) # 主函数名
+#
+# sub0 = re.compile('([0-9a-zA-Z]{2})\.')
+# sub0funcname = re.findall(sub0, mainfunc)[0]
+#
+# sub = re.compile(sub0funcname + '=\{.*?};', re.S)
+#
+# f=open("./base_history/base.js")
+# for a in islice(f, 5500, 5700):
+#     s = s + a
+# f.close()
+# subfunc = re.findall(sub, s)[0].replace('\n', '')
+# print(subfunc) # 副函数
+#
+# import execjs
+#
+# sig = '6N6NPpl9RVpIj-77jp3F3oTSZ6FvGk0rlRrFZeHszUibBICIb5LMtsKEfjVCK-7oGAr8oQGOJsvSK7_qRGHuPBa1lVgIARw8JQ0qOAA'
+#
+# js = mainfunc + subfunc + """
+#     function decode(sig) {{
+#         return {}(sig);
+#     }}
+# """.format(mainfuncname)
+#
+# ctx = execjs.compile(js)
+# # print(ctx)
+#
+# print(ctx.call("decode", sig))
 
 
-from itertools import islice
-s = ""
+# json格式混乱部分的格式化
+import json
 
-f=open("./base_history/base.js")
-for a in islice(f, 1400, 1500):
-    s = s + a
-f.close()
 
-mainfunc = re.findall(func, s)[0]
+def formatter(json_file):
+    import re
+    a = re.findall('; codecs=".*?"",', json_file)
+    for item in a:
+        json_file = json_file.replace(item, '",')
 
-print(mainfunc) # 主函数
-
-mainname = re.compile('([0-9a-zA-Z]{2})=')
-mainfuncname = re.findall(mainname, mainfunc)[0]
-print(mainfuncname) # 主函数名
-
-sub0 = re.compile('([0-9a-zA-Z]{2})\.')
-sub0funcname = re.findall(sub0, mainfunc)[0]
-
-sub = re.compile(sub0funcname + '=\{.*?};', re.S)
-
-f=open("./base_history/base.js")
-for a in islice(f, 5500, 5700):
-    s = s + a
-f.close()
-subfunc = re.findall(sub, s)[0].replace('\n', '')
-print(subfunc) # 副函数
-
-import execjs
-
-sig = '6N6NPpl9RVpIj-77jp3F3oTSZ6FvGk0rlRrFZeHszUibBICIb5LMtsKEfjVCK-7oGAr8oQGOJsvSK7_qRGHuPBa1lVgIARw8JQ0qOAA'
-
-js = mainfunc + subfunc + """
-    function decode(sig) {{
-        return {}(sig);
-    }}
-""".format(mainfuncname)
-
-ctx = execjs.compile(js)
-# print(ctx)
-
-print(ctx.call("decode", sig))
+    load = json.loads(json_file)
+    return load
