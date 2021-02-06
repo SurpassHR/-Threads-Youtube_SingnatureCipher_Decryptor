@@ -8,7 +8,9 @@
 
 
 rtnList = []
-def get_dict_allkeys(key, dict_a): # 查询字典a中键值，并将键值放入字典b
+
+
+def get_dict_allkeys(key, dict_a):  # 查询字典a中键值，并将键值放入字典b
     """
     多维/嵌套字典数据无限遍历，获取json返回结果的所有key值集合
     :param key:
@@ -32,6 +34,8 @@ def get_dict_allkeys(key, dict_a): # 查询字典a中键值，并将键值放入
                     if temp_key == key:
                         rtnList.append(temp_value)
                     get_dict_allkeys(key, rtnList)
+
+    return rtnList
 
 
 if __name__ == '__main__':

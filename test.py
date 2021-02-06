@@ -1,5 +1,5 @@
-import re
-import json
+# import re
+# import json
 
 
 # -------------找出存在于<script >标签内的视频信息----------
@@ -338,22 +338,10 @@ import json
 #
 # print(ctx.call("decode", sig))
 
-
-# json格式混乱部分的格式化
-# import json
-#
-#
-# def formatter(json_file):
-#     import re
-#     a = re.findall('; codecs=".*?"",', json_file)
-#     for item in a:
-#         json_file = json_file.replace(item, '",')
-#
-#     load = json.loads(json_file)
-#     return load
+import os
 
 
-import sys
-
-
-print(sys.path)
+os.system('chcp 65001')
+# os.system("set http_proxy=http://127.0.0.1:2802")
+# os.system("set http_proxys=http://127.0.0.1:2802")
+os.system("curl http://www.google.com")

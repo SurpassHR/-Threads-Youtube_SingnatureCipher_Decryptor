@@ -7,42 +7,28 @@
 # @Email : hu.rui0530@gmail.com
 # @Note : get decode base and get encode func
 
-import re
-import urllib.request
 import execjs
-import time
-import os
-
-from bs4 import BeautifulSoup
+from re import findall, compile, S
+from urllib import request
+from time import strftime, localtime
+from io import BytesIO
+from gzip import GzipFile
+from zlib import decompress, error, MAX_WBITS
 from itertools import islice
 
-
 headers = {
-    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
-                  "Chrome/85.0.4183.76 Safari/537.36",
-    "accept-language": "en,zh-CN;q=0.9,zh;q=0.8,ja;q=0.7,ar;q=0.6"
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
+                  "Chrome/88.0.4324.96 Safari/537.36 Edg/88.0.705.56",
+    "Accept-Language": "en,zh-CN;q=0.9,zh;q=0.8,ja;q=0.7,ar;q=0.6",
+    "Accept-Encoding": "gzip, deflate"
 }
 domain = "https://www.youtube.com"
-func = re.compile('.*?function\(a\){a=a.split\(""\).*?return a.join\(""\)};')
-mainname = re.compile('([0-9a-zA-Z]{2})=')
-sub0 = re.compile('([0-9a-zA-Z]{2})\.')
+script_pat = compile(r'<script src="(.*?)"')
+func = compile(r'.*?function\(a\){a=a.split\(""\).*?return a.join\(""\)};')
+mainname = compile('([0-9a-zA-Z]{2})=')
+sub0 = compile(r'([0-9a-zA-Z]{2})\.')
 filename = './base_history/base.js'
-# filename = './base_history/2020-09-22 17-42-53_base.js'
 baseDownPath = './base_history/'
-
-
-# 文件改名
-def changeFileName():
-    base_gettime = time.strftime("%Y-%m-%d %H-%M-%S", time.localtime())
-    srcFile = './base_history/base.js'
-    dstFile = './base_history/{}_base.js.old'.format(base_gettime)
-    try:
-        os.rename(srcFile, dstFile)
-    except Exception as e:
-        print(e)
-        print('rename file fail\r\n')
-    else:
-        print('rename file success\r\n')
 
 
 # 初始化目录
@@ -55,92 +41,119 @@ def cfgDirInit(path: str) -> bool:
     isExists = os.path.exists(path)
     if not isExists:
         os.makedirs(path)
-        print(path, '创建成功')
+        print('\n' + path, '创建成功')
         return True
     else:
-        print(path, '目录已存在')
+        print('\n' + path, '目录已存在')
         return False
 
 
-def askURL(url):
-    res = urllib.request.Request(url=url, headers=headers)
-    req = urllib.request.urlopen(res)
-    html = req.read().decode('utf-8')
+def parse_html(res, html):
+    encoding = res.info().get('Content-Encoding')
+    if encoding == 'gzip':
+        html = gzip(html)
+    elif encoding == 'deflate':
+        html = deflate(html)
+
     return html
 
 
-def parseHtml(html):
-    soup = BeautifulSoup(html, 'lxml')
-    basejs = soup.select('script[name="player_ias/base"]')
-    return basejs
+def gzip(data):
+    buff = BytesIO(data)
+    f = GzipFile(fileobj=buff)
+
+    return f.read().decode('utf-8')
 
 
-def findBaseJs(basejs):
-    backdrop = re.findall('src="(.*?)"', str(basejs))[0]
-    url = domain + backdrop
+def deflate(data):
+    try:
+        return decompress(data, -MAX_WBITS)
+    except error:
+        return decompress(data)
+
+
+def askURL(url):
+    req_time = strftime("%Y-%m-%d %H:%M:%S", localtime())
+    try:
+        req = request.Request(url=url, headers=headers)
+        res = request.urlopen(req)
+        html = res.read()
+        html = parse_html(res, html)
+
+        return html
+
+    except Exception as e:
+        print('\n请求失败，时间:{}'.format(req_time))
+        print('\n失败原因:{}'.format(e))
+
+
+def findBaseJs(html):
+    basejs_src = ''
+    backdrop = findall(script_pat, html)
+    for link in backdrop:
+        if 'base.js' in link:
+            basejs_src = link
+    url = domain + basejs_src
     jsfile = askURL(url)
+
     return jsfile
 
 
 def writeFile(jsfile, basepath):
-    changeFileName()
     with open(basepath, "w", encoding='utf-8') as f:
         f.write(jsfile)
-    return '成功写入{}'.format(filename)
+
+    return '\n成功写入{}'.format(filename)
 
 
-def getDecoderFromLine(filename, sig):
+def getDecoderFromLine(sig):
     includefun1 = ""
     try:
         f = open(filename)
-        for a in islice(f, 1400, 1500):   # 主函数大概位置
+        for a in islice(f, 1400, 1500):  # 主函数大概位置
             includefun1 = includefun1 + a
         f.close()
     except Exception as e:
         print(e)
-    mainfunc = re.findall(func, includefun1)[0]   # 主函数体
-    # print(mainfunc)
-    mainfuncname = re.findall(mainname, mainfunc)[0]   # 主函数名
+    mainfunc = findall(func, includefun1)[0]  # 主函数体
+    mainfuncname = findall(mainname, mainfunc)[0]  # 主函数名
 
     includefun2 = ""
-    sub0funcname = re.findall(sub0, mainfunc)[0]   # 调用函数名
-    sub = re.compile(sub0funcname + '=\{.*?\};', re.S)  # noqa: W605
+    sub0funcname = findall(sub0, mainfunc)[0]  # 调用函数名
+    sub = compile(sub0funcname + '={.*?};', S)  # noqa: W605
+
     try:
         f = open(filename)
-        for a in islice(f, 5500, 6000):   # 调用函数大概位置
+        for a in islice(f, 5000, 7000):  # 调用函数大概位置
             includefun2 = includefun2 + a
         f.close()
     except Exception as e:
         print(e)
-    subfunc = re.findall(sub, includefun2)[0].replace('\n', '')   # 调用函数体
-    # print(subfunc)
+    subfunc = findall(sub, includefun2)[0].replace('\n', '')  # 调用函数体
 
     js = mainfunc + subfunc + """
         function decode(sig) {{
             return {}(sig);
         }}
     """.format(mainfuncname)
-    ctx = execjs.compile(js)   # 函数 + 输出 打包
+    ctx = execjs.compile(js)  # 函数 + 输出 打包
 
     return ctx.call("decode", sig)
 
 
 def updateDB():
-    url = 'https://www.youtube.com/watch?v=LXb3EKWsInQ'
+    url = 'https://www.youtube.com/watch?v=t2pooIWrbVk&t=7s'
     html = askURL(url)
-    basejs = parseHtml(html)
-    print(basejs)
-    jsfile = findBaseJs(basejs)
+    jsfile = findBaseJs(html)
     cfgDirInit(baseDownPath)
     print(writeFile(jsfile, filename))
 
 
 def jsdecode(sig):
-    return getDecoderFromLine(filename, sig)
+    return getDecoderFromLine(sig)
 
 
 if __name__ == '__main__':
     # updateDB()
-    # sig decode test
-    sig = '4Aq0QJ8wRAIgQlTW1pgRQn5N7mORhz5Xk7S3aHGqnJCp4u9Eg5NO-SICIGosCEUO4LM4KdPw_2rgg7vDFGmDZg_C6ziSfuvCU2jnjn'
-    print(getDecoderFromLine(filename, sig))
+    print(jsdecode('e=AZlvmBiZ=P6vM9bUmD1nSOzXm2rLsJoIQ2EjAMi-ahvAiAds9S8FTxEsHYnR-rteGA4PU'
+                   '-mY7MM4DNwcmFCA0n2FKAhIQRw8JQ0qOAqOjqOjj'))
